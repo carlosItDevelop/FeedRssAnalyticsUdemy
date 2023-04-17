@@ -3,6 +3,7 @@ using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
 using Cooperchip.FeedRSSAnalytics.Infra.Data.Orm;
 using Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Automappers;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Extensios;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi
@@ -23,7 +24,8 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            //builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerConfiguration();
 
 
             builder.Services.AddScoped<IQueryRepository, QueryRepository>();
@@ -34,8 +36,9 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                //app.UseSwagger();
+                //app.UseSwaggerUI();
+                app.UseSwaggerConfiguration();
             }
 
             app.UseHttpsRedirection();
