@@ -27,6 +27,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
 
 
             builder.Services.AddScoped<IQueryRepository, QueryRepository>();
+            builder.Services.AddScoped<IQueryADORepository, QueryADORepository>();
 
             var app = builder.Build();
 

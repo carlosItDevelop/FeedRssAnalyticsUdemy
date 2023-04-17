@@ -29,13 +29,6 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet]
-        //[Route("GetCategory/{authorId}")]
-        //public IQueryable<Category> GetCategory(string authorId)
-        //{
-        //    return _queryRepository.GetCategoriesByAuthorId(authorId);
-        //}
-
         [HttpGet]
         [Route("GetCategory/{authorId}")]
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
