@@ -4,11 +4,11 @@ using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
 using Cooperchip.FeedRSSAnalytics.Domain.Services.Abstractions;
 using Cooperchip.FeedRssBlogsAnalyticsApi.DTOs;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
-using System.Globalization;
 using System.Net;
 using System.Xml.Linq;
 
@@ -19,7 +19,6 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
     public class AnalyticsController : ControllerBase
     {
 
-        readonly CultureInfo culture = new("en-US");
         private readonly IConfiguration _configuration;
         private static readonly object _lockObj = new();
 
@@ -29,13 +28,15 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         private readonly AppSettings _appSettings;
         private readonly IArticleMatrixFactory _articleMatrixFactory;
         private readonly IArticleMatrixRepository _articleMatrixRepository;
+        private readonly IFeedProcessor _feedProcessor;
 
         public AnalyticsController(IConfiguration configuration,
                                    IQueryRepository queryRepository,
                                    IMapper mapper,
                                    IOptions<AppSettings> appSettings,
                                    IArticleMatrixFactory articleMatrixFactory,
-                                   IArticleMatrixRepository articleMatrixRepository)
+                                   IArticleMatrixRepository articleMatrixRepository,
+                                   IFeedProcessor feedProcessor)
         {
             _configuration = configuration;
             _queryRepository = queryRepository;
@@ -43,6 +44,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
             _appSettings = appSettings.Value;
             _articleMatrixFactory = articleMatrixFactory;
             _articleMatrixRepository = articleMatrixRepository;
+            _feedProcessor = feedProcessor;
         }
 
 
@@ -58,28 +60,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                     return false;
                 }
 
-                var entries = from item in doc.Descendants().
-                    First(i => i.Name.LocalName == "channel").Elements().Where(i => i.Name.LocalName == "item")
-                    select new Feed
-                    {
-                        Content = item.Elements().First(i => i.Name.LocalName == "description").Value,
-
-                        Link = (item.Elements().First(i => i.Name.LocalName == "link").Value).StartsWith("/")
-                            ? $"{_appSettings.BaseUrl}" + item.Elements().First(i => i.Name.LocalName == "link").Value
-                            : item.Elements().First(i => i.Name.LocalName == "link").Value,
-
-                        PubDate = Convert.ToDateTime(item.Elements().First(i => i.Name.LocalName == "pubDate").Value, culture),
-
-                        Title = item.Elements().First(i => i.Name.LocalName == "title").Value,
-
-                        FeedType = (item.Elements().First(i => i.Name.LocalName == "link").Value).ToLowerInvariant().Contains("blog")
-                            ? "Blog"
-                            : (item.Elements().First(i => i.Name.LocalName == "link").Value).ToLowerInvariant().Contains("news")
-                                ? "News"
-                                : "Article",
-
-                        Author = item.Elements().First(i => i.Name.LocalName == "author").Value
-                    };
+                var entries = await _feedProcessor.ProcessorFeed(doc, _appSettings);
 
 
                 #region
@@ -246,8 +227,10 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                     }
                 });
 
+                // ToDo BeginTransaction
                 await _articleMatrixRepository.RemoveByAuthorIdAsync(authorId);
                 await _articleMatrixRepository.AddArticlematrixAsync(articleMatrices);
+                // Commit()
 
                 cronometro.Stop();
                 Console.WriteLine("\n\n\nTempo de decorrido: " + cronometro.ElapsedMilliseconds + " Milissegundos!");

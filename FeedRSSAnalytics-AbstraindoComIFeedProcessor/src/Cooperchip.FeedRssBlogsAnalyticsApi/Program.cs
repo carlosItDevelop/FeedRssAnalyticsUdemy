@@ -8,6 +8,8 @@ using Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Automappers;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Extensios;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.FiltersAndAttibutes;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -49,6 +51,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             builder.Services.AddScoped<IArticleMatrixRepository, ArticleMatrixRepository>();
 
             builder.Services.AddScoped<IArticleMatrixFactory, ArticleMatrixFactory>();
+            builder.Services.AddScoped<IFeedProcessor, FeedProcessor>();
 
             var app = builder.Build();
 
