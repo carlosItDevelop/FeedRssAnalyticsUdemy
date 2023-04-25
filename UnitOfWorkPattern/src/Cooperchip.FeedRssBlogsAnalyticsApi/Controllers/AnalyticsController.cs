@@ -2,10 +2,10 @@
 using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
 using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
+using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.UoW;
 using Cooperchip.FeedRssBlogsAnalyticsApi.DTOs;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations.Factory;
-using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.FactorHelpers;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -30,6 +30,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         private readonly IArticleMatrixFactory _articleMatrixFactory;
         private readonly IArticleMatrixRepository _articleMatrixRepository;
         private readonly IFeedProcessor _feedProcessor;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AnalyticsController(IConfiguration configuration,
                                    IQueryRepository queryRepository,
@@ -37,7 +38,8 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                                    IOptions<AppSettings> appSettings,
                                    IArticleMatrixFactory articleMatrixFactory,
                                    IArticleMatrixRepository articleMatrixRepository,
-                                   IFeedProcessor feedProcessor)
+                                   IFeedProcessor feedProcessor,
+                                   IUnitOfWork unitOfWork)
         {
             _configuration = configuration;
             _queryRepository = queryRepository;
@@ -46,6 +48,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
             _articleMatrixFactory = articleMatrixFactory;
             _articleMatrixRepository = articleMatrixRepository;
             _feedProcessor = feedProcessor;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -63,41 +66,9 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 
                 var entries = await _feedProcessor.ProcessorFeed(doc, _appSettings);
 
-
-                #region
-                // Vamos analisar a linha de código abaixo:
-                /*
-                    Esta linha de código cria uma lista chamada feeds que contém objetos do tipo Feed previamente criados e armazenados na variável entries.
-
-                    Aqui está o que acontece em cada etapa dessa linha de código:
-
-                    entries.OrderByDescending(o => o.PubDate): Ordena os objetos Feed em ordem decrescente de data de publicação (PubDate). Isso garante que os itens mais recentes apareçam primeiro na lista.
-
-                    .Where(d => d.PubDate.Year > 2018): Filtra os objetos Feed para incluir apenas aqueles cuja data de publicação (PubDate) é posterior a 2018. Ou seja, somente itens publicados depois de 2018 serão incluídos na lista feeds.
-                
-                .ToList(): Converte a sequência resultante dos passos anteriores em uma List<Feed>. Isso cria uma lista concreta de objetos Feed que podem ser usados posteriormente no código.
-
-                    Portanto, a linha de código cria uma lista feeds que contém objetos Feed ordenados em ordem decrescente de data de publicação e filtrados para incluir apenas aqueles publicados após 2018. Essa lista será usada posteriormente no método CreatePosts para realizar outras operações, como extrair informações adicionais das páginas vinculadas aos itens do feed RSS.
-                 */
-                #endregion
-
                 var filterByYear = DateTime.Now.Year - 4;
 
                 List<Feed> feeds = entries.OrderByDescending(o => o.PubDate).Where(o => o.PubDate.Year > filterByYear).ToList();
-
-                #region
-                /*
-                 Vejamos a explicação sobre este trecho da mesma action "CreatePosts" na controller "AnalyticsController".:
-
-                string urlAddress = string.Empty;: Essa linha inicializa uma variável chamada urlAddress com uma string vazia. Essa variável será usada posteriormente para armazenar o endereço URL de cada item do feed RSS para acessar e analisar as informações da página.
-
-                List<ArticleMatrix> articleMatrices = new();: Essa linha cria uma nova lista chamada articleMatrices que armazenará objetos do tipo ArticleMatrix. Cada objeto ArticleMatrix conterá informações detalhadas sobre um artigo, como autor, tipo, link, título, data de publicação, categoria, visualizações e curtidas.
-
-                _ = int.TryParse(_configuration["ParallelTasksCount"], out int parallelTasksCount);: Essa linha tenta converter o valor armazenado na chave ParallelTasksCount do objeto de configuração configuration em um número inteiro e armazená-lo na variável parallelTasksCount. Se a conversão for bem-sucedida, parallelTasksCount conterá o número máximo de tarefas que podem ser executadas em paralelo durante o processamento dos itens do feed. O descartável é usado para ignorar o valor de retorno do método TryParse, já que estamos interessados apenas no valor convertido armazenado na variável parallelTasksCount.
-
-                Neste trecho de código, as variáveis urlAddress, articleMatrices e parallelTasksCount são inicializadas para serem usadas posteriormente no método CreatePosts. A variável urlAddress armazenará o endereço URL de cada item do feed, articleMatrices armazenará informações detalhadas sobre cada artigo e parallelTasksCount determinará o número máximo de tarefas que podem ser executadas em paralelo durante o processamento dos itens do feed. Isso facilita a raspagem e a análise eficientes das informações das páginas vinculadas aos itens do feed RSS.
-                 */
-                #endregion
 
                 string urlAddress = string.Empty;
                 
@@ -113,17 +84,6 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 
                 Parallel.ForEach(feeds, new ParallelOptions { MaxDegreeOfParallelism = parallelTasksCount }, async feed => 
                 {
-
-                    #region: Nota sobre '.Result' & 'await'
-                    /*
-                    Ao utilizar "var result = httpClient.GetAsync("").Result;", você está bloqueando a execução do código até que a chamada assíncrona seja concluída.Isso é chamado de "sincronização forçada" e pode levar a problemas de desempenho e bloqueio de threads, especialmente em cenários de alto tráfego e tempo de resposta prolongado.
-
-                    Por outro lado, ao utilizar "var result = await httpClient.GetAsync("");", você está usando a palavra - chave "await", que permite que o código continue executando outras tarefas enquanto aguarda a resposta da chamada assíncrona. Isso evita bloqueios desnecessários e melhora o desempenho da aplicação, pois a thread principal não fica parada à espera da resposta da chamada assíncrona.
-
-                    Em resumo, é recomendável utilizar a abordagem com "await" em chamadas assíncronas para melhorar o desempenho da aplicação e evitar problemas de bloqueio de threads.
-                    */
-                    #endregion
-
                     urlAddress = feed.Link;
 
                     var httpClient = new HttpClient
@@ -132,9 +92,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                     };
 
                     var result = httpClient.GetAsync("").Result;
-
                     string strData = "";
-
 
                     if (result.StatusCode == HttpStatusCode.OK)
                     {
@@ -153,10 +111,12 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                     }
                 });
 
-                // ToDo BeginTransaction
                 await _articleMatrixRepository.RemoveByAuthorIdAsync(authorId);
                 await _articleMatrixRepository.AddArticlematrixAsync(articleMatrices);
-                // Commit()
+
+                // Salvar todas as transações dentro deste mesmo contexto/lifecicle
+                _ = await _unitOfWork.Commit();
+
 
                 cronometro.Stop();
                 Console.WriteLine("\n\n\nTempo de decorrido: " + cronometro.ElapsedMilliseconds + " Milissegundos!");

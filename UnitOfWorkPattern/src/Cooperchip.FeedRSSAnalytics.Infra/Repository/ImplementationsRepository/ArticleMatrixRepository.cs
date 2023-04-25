@@ -20,7 +20,7 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
         public async Task RemoveByAuthorIdAsync(string? authorId)
         {
             _context.ArticleMatrices?.RemoveRange(_context.ArticleMatrices.Where(x => x.AuthorId == authorId));
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
         }
 
         public async Task AddArticlematrixAsync(IEnumerable<ArticleMatrix> articleMatrices)
@@ -36,7 +36,7 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
                 newListArticleMatrices.Add(item);
             };
             await _context.ArticleMatrices.AddRangeAsync(newListArticleMatrices);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
         }
 
 
