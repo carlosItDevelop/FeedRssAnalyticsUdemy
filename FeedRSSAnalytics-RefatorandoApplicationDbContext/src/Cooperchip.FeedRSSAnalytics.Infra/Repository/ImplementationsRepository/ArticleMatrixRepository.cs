@@ -3,7 +3,6 @@ using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
 using Cooperchip.FeedRSSAnalytics.Domain.Services;
 using Cooperchip.FeedRSSAnalytics.Infra.Data.Orm;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Immutable;
 
 namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
 {
@@ -16,6 +15,30 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
         {
             _context = context;
         }
+
+
+        public async Task RemoveByAuthorIdAsync(string? authorId)
+        {
+            _context.ArticleMatrices?.RemoveRange(_context.ArticleMatrices.Where(x => x.AuthorId == authorId));
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddArticlematrixAsync(IEnumerable<ArticleMatrix> articleMatrices)
+        {
+            var newListArticleMatrices = new List<ArticleMatrix>();
+            foreach (var item in articleMatrices)
+            {
+                if (item.Category == "Videos")
+                {
+                    item.Type = "Video";
+                }
+                item.Category = item.Category?.Replace("&amp", "&");
+                newListArticleMatrices.Add(item);
+            };
+            await _context.ArticleMatrices.AddRangeAsync(newListArticleMatrices);
+            await _context.SaveChangesAsync();
+        }
+
 
         public IQueryable<Category> GetDistinctCategory()
         {

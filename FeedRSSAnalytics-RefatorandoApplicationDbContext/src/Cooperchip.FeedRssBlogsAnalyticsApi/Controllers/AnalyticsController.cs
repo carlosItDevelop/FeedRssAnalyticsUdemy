@@ -1,17 +1,16 @@
 ﻿using AutoMapper;
+using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
 using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
-using Cooperchip.FeedRSSAnalytics.Infra.Data.Orm;
-using Cooperchip.FeedRssBlogsAnalyticsApi.DTOs;
-using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using HtmlAgilityPack;
-using System.Xml.Linq;
-using System.Net;
-using System.Diagnostics;
-using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
-using Microsoft.Extensions.Options;
 using Cooperchip.FeedRSSAnalytics.Domain.Services.Abstractions;
+using Cooperchip.FeedRssBlogsAnalyticsApi.DTOs;
+using HtmlAgilityPack;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System.Diagnostics;
+using System.Globalization;
+using System.Net;
+using System.Xml.Linq;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 {
@@ -21,7 +20,6 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
     {
 
         readonly CultureInfo culture = new("en-US");
-        private readonly ApplicationDbContext _dbContext;
         private readonly IConfiguration _configuration;
         private static readonly object _lockObj = new();
 
@@ -30,20 +28,21 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 
         private readonly AppSettings _appSettings;
         private readonly IArticleMatrixFactory _articleMatrixFactory;
+        private readonly IArticleMatrixRepository _articleMatrixRepository;
 
-        public AnalyticsController(ApplicationDbContext dbContext,
-                                   IConfiguration configuration,
+        public AnalyticsController(IConfiguration configuration,
                                    IQueryRepository queryRepository,
                                    IMapper mapper,
                                    IOptions<AppSettings> appSettings,
-                                   IArticleMatrixFactory articleMatrixFactory)
+                                   IArticleMatrixFactory articleMatrixFactory,
+                                   IArticleMatrixRepository articleMatrixRepository)
         {
-            _dbContext = dbContext;
             _configuration = configuration;
             _queryRepository = queryRepository;
             _mapper = mapper;
             _appSettings = appSettings.Value;
             _articleMatrixFactory = articleMatrixFactory;
+            _articleMatrixRepository = articleMatrixRepository;
         }
 
 
@@ -247,18 +246,8 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                     }
                 });
 
-                _dbContext.ArticleMatrices?.RemoveRange(_dbContext.ArticleMatrices.Where(x => x.AuthorId == authorId));
-
-                foreach(ArticleMatrix item in articleMatrices)
-                {
-                    if(item.Category == "Videos")
-                    {
-                        item.Type = "Video";
-                    }
-                    item.Category = item.Category?.Replace("&amp", "&");
-                    await _dbContext.ArticleMatrices.AddAsync(item);
-                }
-                await _dbContext.SaveChangesAsync();
+                await _articleMatrixRepository.RemoveByAuthorIdAsync(authorId);
+                await _articleMatrixRepository.AddArticlematrixAsync(articleMatrices);
 
                 cronometro.Stop();
                 Console.WriteLine("\n\n\nTempo de decorrido: " + cronometro.ElapsedMilliseconds + " Milissegundos!");
