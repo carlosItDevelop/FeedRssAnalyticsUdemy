@@ -149,15 +149,19 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 
                         #region ToDo: Fabrica de Matrix de Artigo
                         var articleMatrix = await _articleMatrixFactory.CreateArticleMatrix(authorId, feed);
+                        articleMatrix.Category = ResultCategories.GenerateCategory(htmlDocument);
+                        var view = ResultViews.GenerateViews(htmlDocument, articleMatrix);
+
                         #endregion
 
+                        #region: Old Implementation
                         //string category = "Videos";
                         //if (htmlDocument.GetElementbyId("ImgCategory") != null)
                         //{
                         //    category = htmlDocument.GetElementbyId("ImgCategory").GetAttributeValue("title", "");
                         //}
 
-                        articleMatrix.Category = ResultCategories.GenerateCategory(htmlDocument);
+
 
                         #region: slice notation "[0..^1]"
                         /*
@@ -168,51 +172,53 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 
                         #endregion
 
-                        var view = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='ViewCounts']");
-                        if(view != null)
-                        {
-                            articleMatrix.Views = view.InnerText;
 
-                            if (articleMatrix.Views.Contains('m'))
-                            {
-                                articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000000;
-                            }
-                            else if (articleMatrix.Views.Contains('k'))
-                            {
-                                articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000;
-                            }
-                            else
-                            {
-                                _ = decimal.TryParse(articleMatrix.Views, out decimal viewCount);
-                                articleMatrix.ViewsCount = viewCount;
-                            }
-                        }
-                        else
-                        {
-                            var newsView = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='spanNewsViews']");
-                            if (newsView != null)
-                            {
-                                articleMatrix.Views = newsView.InnerText;
+                        //var view = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='ViewCounts']");
+                        //if(view != null)
+                        //{
+                        //    articleMatrix.Views = view.InnerText;
 
-                                if (articleMatrix.Views.Contains('m'))
-                                {
-                                    articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000000;
-                                }
-                                else if (articleMatrix.Views.Contains('k'))
-                                {
-                                    articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000;
-                                }
-                                else
-                                {
-                                    _ = decimal.TryParse(articleMatrix.Views, out decimal viewCount);
-                                    articleMatrix.ViewsCount = viewCount;
-                                }
-                            }
-                            else
-                            {
-                                articleMatrix.ViewsCount = 0;
-                            }
-                        }
+                        //    if (articleMatrix.Views.Contains('m'))
+                        //    {
+                        //        articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000000;
+                        //    }
+                        //    else if (articleMatrix.Views.Contains('k'))
+                        //    {
+                        //        articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000;
+                        //    }
+                        //    else
+                        //    {
+                        //        _ = decimal.TryParse(articleMatrix.Views, out decimal viewCount);
+                        //        articleMatrix.ViewsCount = viewCount;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    var newsView = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='spanNewsViews']");
+                        //    if (newsView != null)
+                        //    {
+                        //        articleMatrix.Views = newsView.InnerText;
+
+                        //        if (articleMatrix.Views.Contains('m'))
+                        //        {
+                        //            articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000000;
+                        //        }
+                        //        else if (articleMatrix.Views.Contains('k'))
+                        //        {
+                        //            articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000;
+                        //        }
+                        //        else
+                        //        {
+                        //            _ = decimal.TryParse(articleMatrix.Views, out decimal viewCount);
+                        //            articleMatrix.ViewsCount = viewCount;
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        articleMatrix.ViewsCount = 0;
+                        //    }
+                        //}
+                        #endregion
 
                         var like = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='LabelLikeCount']");
                         if(like != null)
