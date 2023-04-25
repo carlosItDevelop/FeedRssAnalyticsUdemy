@@ -73,10 +73,22 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
             return Paginate(data, pageIndex, pageSize);
         }
 
+        public async Task<PagedResulFeed<ArticleMatrix>> GetFilterByYear(int pageIndex, int pageSize, int? query = null)
+        {
+            IEnumerable<ArticleMatrix>? data = new List<ArticleMatrix>();
+
+            var source = _context?.ArticleMatrices?.AsQueryable();
+            
+            data = (query != null)
+                ? await source.Where(x => x.PubDate.Year >= query).ToListAsync() 
+                : await source.ToListAsync();
+
+            return Paginate(data, pageIndex, pageSize);
+
+        }
 
 
-        #region
-
+        #region: Paginate
         private PagedResulFeed<ArticleMatrix> Paginate(IEnumerable<ArticleMatrix> data, int pageIndex, int pageSize)
         {
             int count = data.Count();
@@ -93,7 +105,6 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
                 HasNext = pageIndex < count - 1
             };
         }
-
         #endregion
 
     }

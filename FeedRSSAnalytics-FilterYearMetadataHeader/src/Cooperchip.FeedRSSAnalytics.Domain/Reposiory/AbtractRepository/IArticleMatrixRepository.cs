@@ -10,5 +10,7 @@ namespace Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository
         Task<PagedResulFeed<ArticleMatrix>> GetCategoryAndOrTitle(int pageIndex, int pageSize, string? categoria = null, string? title = null);
 
         Task<PagedResulFeed<ArticleMatrix>> GetCategoryAndTitle(int pageIndex, int pageSize, string? categoria = null, string? title = null);
+
+        Task<PagedResulFeed<ArticleMatrix>> GetFilterByYear(int pageIndex, int pageSize, int? query = null);
     }
 }
