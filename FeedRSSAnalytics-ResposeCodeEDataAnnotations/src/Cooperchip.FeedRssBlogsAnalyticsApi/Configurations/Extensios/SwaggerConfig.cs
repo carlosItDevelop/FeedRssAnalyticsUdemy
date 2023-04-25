@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Extensios
 {
@@ -12,9 +13,15 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Extensios
                 {
                     Title = "Web Scraping com Asp.Net Core 7 & Angular 15",
                     Description = "Esta API serve recursos para consumo Feed RSS Web Scraping.",
-                    Contact = new OpenApiContact() { Name = "Carlos A Santos", Email = "carlos.itdeveloper@gmail.com" },
-                    License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }                    
+                    Contact = new OpenApiContact() { Name = "Cooperchip, Inc.", Email = "carlos.itdeveloper@gmail.com" },
+                    License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") },
+                    TermsOfService = new Uri("https://cooperchip.com.br")
                 });
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+
+
                 #region: Security
                 //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 //{

@@ -20,11 +20,27 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         }
 
 
+
+        /// <summary>
+        /// Resumo analítico de Categoria
+        /// </summary>
+        /// <param name="authorId"></param>
+        /// <returns>Retorna uma lista de Categoria por Id</returns>
+        /// <remarks>
+        /// Exemplo de Request:
+        /// 
+        ///      GET /Todo
+        ///      {
+        ///         "name": "Nome da categoria",
+        ///         "count": Qtde de Por na Categoria"
+        ///      }
+        /// </remarks>
         [HttpGet]
         [Route("GetCategory/{authorId}")]
         [ProducesResponseType(typeof(IEnumerable<CategoryDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategory(string authorId)
         {
             if(string.IsNullOrWhiteSpace(authorId)) return BadRequest(string.Empty);
@@ -37,6 +53,21 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
             return Ok(categories);
         }
 
+
+        /// <summary>
+        /// Resumo por Agrupamento de Post por Autor
+        /// </summary>
+        /// <returns>Resumo por Agrupamento de Post por Autor</returns>
+        /// <remarks>
+        /// Exemplo de Request:
+        /// 
+        ///      GET /Todo
+        ///      {
+        ///         "authorId": "Id do Author",
+        ///         "author": "Nome do Author",
+        ///         "count": Qtde de Post deste Author"
+        ///      }
+        /// </remarks>
         [HttpGet]
         [Route("GetAuthors")]
         [ProducesResponseType(typeof(IEnumerable<AuthorsDto>), StatusCodes.Status200OK)]
