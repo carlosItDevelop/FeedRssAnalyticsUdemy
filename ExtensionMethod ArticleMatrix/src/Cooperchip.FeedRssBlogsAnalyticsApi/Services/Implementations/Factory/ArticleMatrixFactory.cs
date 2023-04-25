@@ -1,13 +1,15 @@
 ﻿using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations.Factory;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.FactorExtensions;
+using HtmlAgilityPack;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory
 {
     public class ArticleMatrixFactory : IArticleMatrixFactory
     {
-        public async Task<ArticleMatrix> CreateArticleMatrix(string authorId, Feed feed)
+        public async Task<ArticleMatrix> CreateArticleMatrix(string authorId, Feed feed, HtmlDocument htmlDocument)
         {
-            var returnFactory = new ArticleMatrix
+            var articleMatrix = new ArticleMatrix
             {
                 AuthorId = authorId,
                 Author = feed.Author,
@@ -16,7 +18,11 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory
                 Title = feed.Title,
                 PubDate = feed.PubDate
             };
-            return await Task.FromResult(returnFactory);
+
+            articleMatrix.AddCategories(htmlDocument).AddViews(htmlDocument);
+            articleMatrix.AddLikes(htmlDocument);
+
+            return await Task.FromResult(articleMatrix);
         }
     }
 }

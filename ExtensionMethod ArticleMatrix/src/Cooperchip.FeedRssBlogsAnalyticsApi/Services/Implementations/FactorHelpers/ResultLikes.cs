@@ -1,7 +1,7 @@
 ﻿using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using HtmlAgilityPack;
 
-namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory
+namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.FactorHelpers
 {
     public static class ResultLikes
     {

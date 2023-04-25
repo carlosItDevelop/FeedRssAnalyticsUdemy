@@ -8,7 +8,12 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations
 {
     public class FeedProcessor : IFeedProcessor
     {
-        readonly CultureInfo culture = new("en-US");
+        private readonly CultureInfo _culture;
+
+        public FeedProcessor()
+        {
+            _culture = new CultureInfo("en-US");
+        }
 
         public async Task<IEnumerable<Feed>> ProcessorFeed(XDocument doc, AppSettings appSettings)
         {
@@ -22,7 +27,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations
                                   ? $"{appSettings.BaseUrl}" + item.Elements().First(i => i.Name.LocalName == "link").Value
                                   : item.Elements().First(i => i.Name.LocalName == "link").Value,
 
-                              PubDate = Convert.ToDateTime(item.Elements().First(i => i.Name.LocalName == "pubDate").Value, culture),
+                              PubDate = Convert.ToDateTime(item.Elements().First(i => i.Name.LocalName == "pubDate").Value, _culture),
 
                               Title = item.Elements().First(i => i.Name.LocalName == "title").Value,
 

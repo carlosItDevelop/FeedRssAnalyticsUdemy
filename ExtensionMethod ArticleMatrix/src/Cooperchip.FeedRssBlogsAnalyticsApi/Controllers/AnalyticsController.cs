@@ -5,7 +5,7 @@ using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
 using Cooperchip.FeedRssBlogsAnalyticsApi.DTOs;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations.Factory;
-using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.FactorHelpers;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -144,17 +144,9 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                         strData = await result.Content.ReadAsStringAsync();
 
                         HtmlDocument htmlDocument = new();
-
                         htmlDocument.LoadHtml(strData);
 
-                        #region ToDo: Fabrica de Matrix de Artigo
-                        var articleMatrix = await _articleMatrixFactory.CreateArticleMatrix(authorId, feed);
-                        articleMatrix.Category = ResultCategories.GenerateCategory(htmlDocument);
-                        var view = ResultViews.GenerateViews(htmlDocument, articleMatrix);
-                        var like = ResultLikes.GenerateLikes(htmlDocument, articleMatrix);
-
-                        #endregion
-
+                        var articleMatrix = await _articleMatrixFactory.CreateArticleMatrix(authorId, feed, htmlDocument);
 
                         lock (_lockObj)
                         {

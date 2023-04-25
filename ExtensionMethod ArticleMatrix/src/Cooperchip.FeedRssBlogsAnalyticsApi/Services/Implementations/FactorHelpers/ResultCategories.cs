@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 
-namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory
+namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.FactorHelpers
 {
     public static class ResultCategories
     {

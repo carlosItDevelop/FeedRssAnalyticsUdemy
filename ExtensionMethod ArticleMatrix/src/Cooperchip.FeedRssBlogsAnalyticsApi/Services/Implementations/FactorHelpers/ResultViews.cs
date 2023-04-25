@@ -1,8 +1,7 @@
 ﻿using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using HtmlAgilityPack;
-using System.Xml.Linq;
 
-namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory
+namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.FactorHelpers
 {
     public static class ResultViews
     {
