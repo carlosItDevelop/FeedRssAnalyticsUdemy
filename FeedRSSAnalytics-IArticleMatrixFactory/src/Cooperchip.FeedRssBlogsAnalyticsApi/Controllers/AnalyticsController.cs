@@ -11,6 +11,7 @@ using System.Net;
 using System.Diagnostics;
 using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
 using Microsoft.Extensions.Options;
+using Cooperchip.FeedRSSAnalytics.Domain.Services.Abstractions;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 {
@@ -28,18 +29,21 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         private readonly IMapper _mapper;
 
         private readonly AppSettings _appSettings;
+        private readonly IArticleMatrixFactory _articleMatrixFactory;
 
-        public AnalyticsController(ApplicationDbContext dbContext, 
-                                   IConfiguration configuration, 
-                                   IQueryRepository queryRepository, 
-                                   IMapper mapper, 
-                                   IOptions<AppSettings> appSettings)
+        public AnalyticsController(ApplicationDbContext dbContext,
+                                   IConfiguration configuration,
+                                   IQueryRepository queryRepository,
+                                   IMapper mapper,
+                                   IOptions<AppSettings> appSettings,
+                                   IArticleMatrixFactory articleMatrixFactory)
         {
             _dbContext = dbContext;
             _configuration = configuration;
             _queryRepository = queryRepository;
             _mapper = mapper;
             _appSettings = appSettings.Value;
+            _articleMatrixFactory = articleMatrixFactory;
         }
 
 
@@ -163,16 +167,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 
                         htmlDocument.LoadHtml(strData);
 
-                        ArticleMatrix articleMatrix = new()
-                        {
-                            AuthorId = authorId,
-                            Author = feed.Author,
-                            Type = feed.FeedType,
-                            Link = feed.Link,
-                            Title = feed.Title,
-                            PubDate = feed.PubDate
-                        };
-
+                        var articleMatrix = await _articleMatrixFactory.CreateArticleMatrix(authorId, feed);
 
                         string category = "Videos";
                         if (htmlDocument.GetElementbyId("ImgCategory") != null)

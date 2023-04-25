@@ -1,6 +1,8 @@
 
 using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
+using Cooperchip.FeedRSSAnalytics.Domain.Services.Abstractions;
+using Cooperchip.FeedRSSAnalytics.Domain.Services.Implementations;
 using Cooperchip.FeedRSSAnalytics.Infra.Data.Orm;
 using Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Automappers;
@@ -45,6 +47,8 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             builder.Services.AddScoped<IQueryADORepository, QueryADORepository>();
 
             builder.Services.AddScoped<IArticleMatrixRepository, ArticleMatrixRepository>();
+
+            builder.Services.AddScoped<IArticleMatrixFactory, ArticleMatrixFactory>();
 
             var app = builder.Build();
 
