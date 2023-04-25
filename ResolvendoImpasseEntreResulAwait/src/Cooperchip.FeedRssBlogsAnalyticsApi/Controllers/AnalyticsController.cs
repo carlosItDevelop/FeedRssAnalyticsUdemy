@@ -120,8 +120,6 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 
                     Por outro lado, ao utilizar "var result = await httpClient.GetAsync("");", você está usando a palavra - chave "await", que permite que o código continue executando outras tarefas enquanto aguarda a resposta da chamada assíncrona. Isso evita bloqueios desnecessários e melhora o desempenho da aplicação, pois a thread principal não fica parada à espera da resposta da chamada assíncrona.
 
-                    Embora os resultados dos links fornecidos não falem diretamente sobre essa diferença específica, eles ilustram o uso de chamadas assíncronas em C#. No link 1, é possível ver o uso da palavra-chave "await" em conjunto com o método "PostAsync".
-
                     Em resumo, é recomendável utilizar a abordagem com "await" em chamadas assíncronas para melhorar o desempenho da aplicação e evitar problemas de bloqueio de threads.
                     */
                     #endregion
@@ -133,7 +131,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                         BaseAddress = new Uri(urlAddress)
                     };
 
-                    var result = await httpClient.GetAsync("");
+                    var result = httpClient.GetAsync("").Result;
 
                     string strData = "";
 
@@ -141,7 +139,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                     if (result.StatusCode == HttpStatusCode.OK)
                     {
 
-                        strData = await result.Content.ReadAsStringAsync();
+                        strData = result.Content.ReadAsStringAsync().Result;
 
                         HtmlDocument htmlDocument = new();
                         htmlDocument.LoadHtml(strData);
