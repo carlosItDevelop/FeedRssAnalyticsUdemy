@@ -1,7 +1,7 @@
 ﻿using Cooperchip.FeedRSSAnalytics.Domain.Entities;
-using Cooperchip.FeedRSSAnalytics.Domain.Services.Abstractions;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations.Factory;
 
-namespace Cooperchip.FeedRSSAnalytics.Domain.Services.Implementations
+namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory
 {
     public class ArticleMatrixFactory : IArticleMatrixFactory
     {

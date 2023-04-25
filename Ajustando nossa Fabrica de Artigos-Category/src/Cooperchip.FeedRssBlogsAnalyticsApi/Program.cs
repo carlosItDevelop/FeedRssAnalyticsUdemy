@@ -1,15 +1,15 @@
 
 using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
-using Cooperchip.FeedRSSAnalytics.Domain.Services.Abstractions;
-using Cooperchip.FeedRSSAnalytics.Domain.Services.Implementations;
 using Cooperchip.FeedRSSAnalytics.Infra.Data.Orm;
 using Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Automappers;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Extensios;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.FiltersAndAttibutes;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations.Factory;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 

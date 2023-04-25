@@ -2,9 +2,10 @@
 using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
 using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
-using Cooperchip.FeedRSSAnalytics.Domain.Services.Abstractions;
 using Cooperchip.FeedRssBlogsAnalyticsApi.DTOs;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations.Factory;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -140,22 +141,23 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                     if (result.StatusCode == HttpStatusCode.OK)
                     {
 
-
                         strData = await result.Content.ReadAsStringAsync();
 
                         HtmlDocument htmlDocument = new();
 
                         htmlDocument.LoadHtml(strData);
 
+                        #region ToDo: Fabrica de Matrix de Artigo
                         var articleMatrix = await _articleMatrixFactory.CreateArticleMatrix(authorId, feed);
+                        #endregion
 
-                        string category = "Videos";
-                        if (htmlDocument.GetElementbyId("ImgCategory") != null)
-                        {
-                            category = htmlDocument.GetElementbyId("ImgCategory").GetAttributeValue("title", "");
-                        }
+                        //string category = "Videos";
+                        //if (htmlDocument.GetElementbyId("ImgCategory") != null)
+                        //{
+                        //    category = htmlDocument.GetElementbyId("ImgCategory").GetAttributeValue("title", "");
+                        //}
 
-                        articleMatrix.Category = category;
+                        articleMatrix.Category = ResultCategories.GenerateCategory(htmlDocument);
 
                         #region: slice notation "[0..^1]"
                         /*
