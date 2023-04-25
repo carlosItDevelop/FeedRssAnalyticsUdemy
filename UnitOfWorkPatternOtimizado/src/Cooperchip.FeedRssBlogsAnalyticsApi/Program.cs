@@ -1,10 +1,9 @@
 
 using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
-using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.UoW;
+using Cooperchip.FeedRSSAnalytics.Domain.Services.Persistences;
 using Cooperchip.FeedRSSAnalytics.Infra.Data.Orm;
 using Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository;
-using Cooperchip.FeedRSSAnalytics.Infra.Repository.UoW;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Automappers;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Extensios;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.FiltersAndAttibutes;
@@ -52,7 +51,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             builder.Services.AddScoped<IArticleMatrixRepository, ArticleMatrixRepository>();
             builder.Services.AddScoped<IArticleMatrixFactory, ArticleMatrixFactory>();
             builder.Services.AddScoped<IFeedProcessor, FeedProcessor>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<ITransactionHandler, TransactionHandler>();
 
             var app = builder.Build();
 

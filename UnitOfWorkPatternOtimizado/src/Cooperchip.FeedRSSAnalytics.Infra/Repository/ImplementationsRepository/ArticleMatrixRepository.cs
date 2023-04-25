@@ -1,5 +1,6 @@
 ﻿using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
+using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.UoW;
 using Cooperchip.FeedRSSAnalytics.Domain.Services;
 using Cooperchip.FeedRSSAnalytics.Infra.Data.Orm;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
 
         private readonly ApplicationDbContext _context;
 
+        public IUnitOfWork UnitOfWork => (IUnitOfWork)_context;
+
         public ArticleMatrixRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -20,7 +23,6 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
         public async Task RemoveByAuthorIdAsync(string? authorId)
         {
             _context.ArticleMatrices?.RemoveRange(_context.ArticleMatrices.Where(x => x.AuthorId == authorId));
-            //await _context.SaveChangesAsync();
         }
 
         public async Task AddArticlematrixAsync(IEnumerable<ArticleMatrix> articleMatrices)
@@ -36,7 +38,6 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
                 newListArticleMatrices.Add(item);
             };
             await _context.ArticleMatrices.AddRangeAsync(newListArticleMatrices);
-            //await _context.SaveChangesAsync();
         }
 
 
@@ -127,6 +128,11 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
                 HasPrevious = pageIndex > 1,
                 HasNext = pageIndex < count - 1
             };
+        }
+
+        public void Dispose()
+        {
+            _context?.Dispose();
         }
         #endregion
 

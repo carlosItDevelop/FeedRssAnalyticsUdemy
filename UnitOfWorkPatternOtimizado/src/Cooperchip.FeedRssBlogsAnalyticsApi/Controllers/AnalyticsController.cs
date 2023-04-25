@@ -3,6 +3,7 @@ using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
 using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.UoW;
+using Cooperchip.FeedRSSAnalytics.Domain.Services.Persistences;
 using Cooperchip.FeedRssBlogsAnalyticsApi.DTOs;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations.Factory;
@@ -30,7 +31,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         private readonly IArticleMatrixFactory _articleMatrixFactory;
         private readonly IArticleMatrixRepository _articleMatrixRepository;
         private readonly IFeedProcessor _feedProcessor;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ITransactionHandler _transactionHandler;
 
         public AnalyticsController(IConfiguration configuration,
                                    IQueryRepository queryRepository,
@@ -39,7 +40,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                                    IArticleMatrixFactory articleMatrixFactory,
                                    IArticleMatrixRepository articleMatrixRepository,
                                    IFeedProcessor feedProcessor,
-                                   IUnitOfWork unitOfWork)
+                                   ITransactionHandler transactionHandler)
         {
             _configuration = configuration;
             _queryRepository = queryRepository;
@@ -48,7 +49,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
             _articleMatrixFactory = articleMatrixFactory;
             _articleMatrixRepository = articleMatrixRepository;
             _feedProcessor = feedProcessor;
-            _unitOfWork = unitOfWork;
+            _transactionHandler = transactionHandler;
         }
 
 
@@ -115,7 +116,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                 await _articleMatrixRepository.AddArticlematrixAsync(articleMatrices);
 
                 // Salvar todas as transações dentro deste mesmo contexto/lifecicle
-                _ = await _unitOfWork.Commit();
+                _ = await _transactionHandler.PersistirDados(_articleMatrixRepository.UnitOfWork);
 
 
                 cronometro.Stop();

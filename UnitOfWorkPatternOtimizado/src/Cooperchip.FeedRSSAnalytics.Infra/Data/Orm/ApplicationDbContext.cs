@@ -1,12 +1,10 @@
 ﻿using Cooperchip.FeedRSSAnalytics.Domain.Entities;
-using Cooperchip.FeedRSSAnalytics.Infra.Data.Mappings;
+using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.UoW;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Reflection.Emit;
 
 namespace Cooperchip.FeedRSSAnalytics.Infra.Data.Orm
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext, IUnitOfWork
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :base(options) { }
 
@@ -32,6 +30,15 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Data.Orm
 
             base.OnModelCreating(modelBuilder);
         }
+
+
+        public async Task<bool> Commit()
+        {
+            var sucesso = await base.SaveChangesAsync() > 0;
+            // pode lançar varios eventos, apenas se todas as transações e comands forem satisfeitos
+            return sucesso;
+        }
+
 
     }
 }

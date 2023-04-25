@@ -2,6 +2,6 @@
 {
     public interface IUnitOfWork
     {
-        Task<int> Commit();
+        Task<bool> Commit();
     }
 }

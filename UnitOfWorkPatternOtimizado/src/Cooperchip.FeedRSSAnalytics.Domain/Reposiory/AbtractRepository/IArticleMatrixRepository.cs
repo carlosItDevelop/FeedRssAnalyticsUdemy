@@ -1,9 +1,10 @@
 ﻿using Cooperchip.FeedRSSAnalytics.Domain.Entities;
+using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.GenericAbstractions;
 using Cooperchip.FeedRSSAnalytics.Domain.Services;
 
 namespace Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository
 {
-    public interface IArticleMatrixRepository
+    public interface IArticleMatrixRepository : IGenericRepository<ArticleMatrix>
     {
         // ===/ Queries ====
         IQueryable<Category> GetDistinctCategory();
