@@ -151,84 +151,12 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                         var articleMatrix = await _articleMatrixFactory.CreateArticleMatrix(authorId, feed);
                         articleMatrix.Category = ResultCategories.GenerateCategory(htmlDocument);
                         var view = ResultViews.GenerateViews(htmlDocument, articleMatrix);
-
-                        #endregion
-
-                        #region: Old Implementation
-                        //string category = "Videos";
-                        //if (htmlDocument.GetElementbyId("ImgCategory") != null)
-                        //{
-                        //    category = htmlDocument.GetElementbyId("ImgCategory").GetAttributeValue("title", "");
-                        //}
-
-
-
-                        #region: slice notation "[0..^1]"
-                        /*
-                        O trecho "[0..^1]" presente no código em questão é um slice notation, que indica uma fatia de uma string em C#. Esse slice seleciona os caracteres que vão do primeiro elemento da string (índice 0) até o penúltimo elemento da string (índice -1, representado pelo símbolo ^1). Ou seja, ele seleciona toda a string, exceto o último caractere.
-
-                        Isso é utilizado para remover o 'm' ou o 'k' que podem estar presentes na string "articleMatrix.Views", permitindo que o restante da string seja convertido para um número decimal e multiplicado pelo fator correspondente a cada letra(1000000 para 'm' e 1000 para 'k') para obter o número total de visualizações do artigo.
-                        */
+                        var like = ResultLikes.GenerateLikes(htmlDocument, articleMatrix);
 
                         #endregion
 
 
-                        //var view = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='ViewCounts']");
-                        //if(view != null)
-                        //{
-                        //    articleMatrix.Views = view.InnerText;
-
-                        //    if (articleMatrix.Views.Contains('m'))
-                        //    {
-                        //        articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000000;
-                        //    }
-                        //    else if (articleMatrix.Views.Contains('k'))
-                        //    {
-                        //        articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000;
-                        //    }
-                        //    else
-                        //    {
-                        //        _ = decimal.TryParse(articleMatrix.Views, out decimal viewCount);
-                        //        articleMatrix.ViewsCount = viewCount;
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    var newsView = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='spanNewsViews']");
-                        //    if (newsView != null)
-                        //    {
-                        //        articleMatrix.Views = newsView.InnerText;
-
-                        //        if (articleMatrix.Views.Contains('m'))
-                        //        {
-                        //            articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000000;
-                        //        }
-                        //        else if (articleMatrix.Views.Contains('k'))
-                        //        {
-                        //            articleMatrix.ViewsCount = decimal.Parse(articleMatrix.Views[0..^1]) * 1000;
-                        //        }
-                        //        else
-                        //        {
-                        //            _ = decimal.TryParse(articleMatrix.Views, out decimal viewCount);
-                        //            articleMatrix.ViewsCount = viewCount;
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        articleMatrix.ViewsCount = 0;
-                        //    }
-                        //}
-                        #endregion
-
-                        var like = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='LabelLikeCount']");
-                        if(like != null)
-                        {
-                            _ = int.TryParse(like.InnerText, out int likes);
-                            articleMatrix.Likes = likes;
-
-                        }
-
-                        lock(_lockObj)
+                        lock (_lockObj)
                         {
                             articleMatrices.Add(articleMatrix);
                         }
