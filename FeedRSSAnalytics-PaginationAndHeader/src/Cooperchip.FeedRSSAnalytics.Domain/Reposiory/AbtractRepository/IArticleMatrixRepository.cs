@@ -8,5 +8,7 @@ namespace Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository
         IQueryable<Category> GetDistinctCategory();
 
         Task<PagedResulFeed<ArticleMatrix>> GetCategoryAndOrTitle(int pageIndex, int pageSize, string? categoria = null, string? title = null);
+
+        Task<PagedResulFeed<ArticleMatrix>> GetCategoryAndTitle(int pageIndex, int pageSize, string? categoria = null, string? title = null);
     }
 }

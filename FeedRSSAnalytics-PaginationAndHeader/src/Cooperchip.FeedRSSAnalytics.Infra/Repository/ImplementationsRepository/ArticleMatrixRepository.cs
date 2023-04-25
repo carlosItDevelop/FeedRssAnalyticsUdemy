@@ -28,6 +28,20 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
         }
 
 
+        public async Task<PagedResulFeed<ArticleMatrix>> GetCategoryAndTitle(int pageIndex, int pageSize, string? categoria = null, string? title = null)
+        {
+            var source = _context.ArticleMatrices?.AsQueryable();
+
+            if (!string.IsNullOrEmpty(categoria) || !string.IsNullOrEmpty(title))
+            {
+                source = source?.Where(x => (categoria == null || x.Category.Contains(categoria)) && (title == null || x.Title.Contains(title)));
+            }
+
+            var data = await source.ToListAsync();
+            return Paginate(data, pageIndex, pageSize);
+        }
+
+
         public async Task<PagedResulFeed<ArticleMatrix>> GetCategoryAndOrTitle(int pageIndex, int pageSize, string? categoria = null, string? title = null)
         {
             #region: Algoritmo dos if aninhados
@@ -59,6 +73,10 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
             return Paginate(data, pageIndex, pageSize);
         }
 
+
+
+        #region
+
         private PagedResulFeed<ArticleMatrix> Paginate(IEnumerable<ArticleMatrix> data, int pageIndex, int pageSize)
         {
             int count = data.Count();
@@ -75,6 +93,8 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
                 HasNext = pageIndex < count - 1
             };
         }
+
+        #endregion
 
     }
 }

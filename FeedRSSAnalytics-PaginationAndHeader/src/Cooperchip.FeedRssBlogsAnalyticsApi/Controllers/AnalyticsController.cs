@@ -32,7 +32,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         [HttpGet]
         [Route("GetCategory/{authorId}")]
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<CategoryDto>>> GetCategory(string authorId)
         {
