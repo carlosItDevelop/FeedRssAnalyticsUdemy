@@ -2,7 +2,7 @@
 
 #### Analisando a Classe: AnalyticsController | by: Cooperchip, Inc.
 
-> Esta classe GIGANTESCA e difícil de manter vai nos gerar um exercício de refatoração e aplicações de diversos padrões incríveis. Venha comigo nessa jornada e se delicie com os processos de refatoração!
+> **Esta classe GIGANTESCA e difícil de manter vai nos gerar um exercício de refatoração e aplicações de diversos padrões incríveis. Venha comigo nessa jornada e se delicie com os processos de refatoração!**
 
 ---
 ```csharp
