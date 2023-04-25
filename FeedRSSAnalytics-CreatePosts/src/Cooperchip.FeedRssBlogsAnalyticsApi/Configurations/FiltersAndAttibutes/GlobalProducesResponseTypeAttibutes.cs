@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Net.Mime;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.FiltersAndAttibutes
 {
@@ -9,8 +10,9 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.FiltersAndAttibutes
         {
             if (statusCode == 200 || statusCode == 201 || statusCode == 204)
             {
-                ContentType = "application/json";
+                // Faça o que quiser aqui com Type e outras possibilidades...
             }
+            ContentType = "application/json";
         }
 
         public string? ContentType { get; set; }

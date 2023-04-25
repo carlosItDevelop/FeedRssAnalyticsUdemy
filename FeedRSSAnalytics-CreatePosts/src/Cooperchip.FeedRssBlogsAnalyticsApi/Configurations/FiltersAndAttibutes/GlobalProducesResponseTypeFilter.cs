@@ -25,6 +25,13 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.FiltersAndAttibutes
             {
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
             }
+
+            if (context.Result is ObjectResult objectResult)
+            {
+                objectResult.StatusCode = (int)HttpStatusCode.OK; // 200
+                objectResult.ContentTypes.Add("application/json");
+            }
+
         }
     }
 }
