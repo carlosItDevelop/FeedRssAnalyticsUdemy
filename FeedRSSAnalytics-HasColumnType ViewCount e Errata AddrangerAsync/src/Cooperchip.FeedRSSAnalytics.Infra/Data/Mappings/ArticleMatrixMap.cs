@@ -37,6 +37,10 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Data.Mappings
             builder.Property(x => x.Views)
                 .HasColumnType("nvarchar(max)");
 
+            builder.Property(x => x.ViewsCount)
+                .HasColumnType("decimal(18,4)")
+                .IsRequired();
+
         }
     }
 }
