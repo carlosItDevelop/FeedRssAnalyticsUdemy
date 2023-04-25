@@ -12,6 +12,7 @@ using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Abstrations.Factory;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Net;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi
@@ -28,6 +29,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
                         opt.UseSqlServer(configuration.GetConnectionString("ConnStr")));
 
             builder.Services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
+            builder.Services.AddSingleton(x => x.GetRequiredService<IOptions<AppSettings>>().Value);
 
             // AutoMapper
             builder.Services.AddAutoMapper(typeof(AutoMapperConfig));

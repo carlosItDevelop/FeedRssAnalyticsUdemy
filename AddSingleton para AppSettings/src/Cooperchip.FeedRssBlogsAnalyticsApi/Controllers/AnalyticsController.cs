@@ -36,7 +36,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         public AnalyticsController(IConfiguration configuration,
                                    IQueryRepository queryRepository,
                                    IMapper mapper,
-                                   IOptions<AppSettings> appSettings,
+                                   AppSettings appSettings,
                                    IArticleMatrixFactory articleMatrixFactory,
                                    IArticleMatrixRepository articleMatrixRepository,
                                    IFeedProcessor feedProcessor,
@@ -45,7 +45,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
             _configuration = configuration;
             _queryRepository = queryRepository;
             _mapper = mapper;
-            _appSettings = appSettings.Value;
+            _appSettings = appSettings;
             _articleMatrixFactory = articleMatrixFactory;
             _articleMatrixRepository = articleMatrixRepository;
             _feedProcessor = feedProcessor;

@@ -4,7 +4,7 @@
 
 > **Esta classe GIGANTESCA e difícil de manter vai nos gerar um exercício de refatoração e aplicações de diversos padrões incríveis. Venha comigo nessa jornada e se delicie com os processos de refatoração!**
 
-### Vamos refatorar esse 'Code Smell' e usar 'Clean Code and Design Patterns' para deixá-lo top :)
+### Esse 'Code Smell' vai ser detonado com 'Clean Code and Design Patterns' e ficará top :)
 
 ---
 ```csharp
