@@ -31,6 +31,8 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             builder.Services.AddScoped<IQueryRepository, QueryRepository>();
             builder.Services.AddScoped<IQueryADORepository, QueryADORepository>();
 
+            builder.Services.AddScoped<IArticleMatrixRepository, ArticleMatrixRepository>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
