@@ -1,11 +1,10 @@
 ﻿using Cooperchip.FeedRSSAnalytics.Domain.Entities;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
 using Cooperchip.FeedRSSAnalytics.Domain.Services;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.FiltersAndAttibutes;
 using Cooperchip.FeedRssBlogsAnalyticsApi.DTOs;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Runtime.InteropServices;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 {
@@ -26,10 +25,10 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
             return _articleMatrixRepository.GetDistinctCategory();
         }
 
-
-        [HttpGet]
-        [Route("GetCategoryAndTitle")]
+        
+        [HttpGet("GetCategoryAndTitle")]
         [Produces("application/json")]
+        [ProducesResponseType(typeof(PagedResulFeed<ArticleMatrix>), 200)]
         public async Task<ActionResult<PagedResulFeed<ArticleMatrix>>> GetCategoryAndTitle(
                                        [FromQuery] int pi = 1, int ps = 10, string? q = null, string? t = null)
         {
@@ -37,17 +36,13 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
             var metadata = new ArtigosMetadataDto(artigos);
             GenericResponseHeader(metadata);
 
-
             return Ok(artigos);
         }
 
 
-        [HttpGet]
-        [Route("GetCategoryAndOrTitle")]
-        [ProducesResponseType(typeof(PagedResulFeed<ArticleMatrix>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("GetCategoryAndOrTitle")]
         [Produces("application/json")]
+        [ProducesResponseType(typeof(PagedResulFeed<ArticleMatrix>), 200)]
         public async Task<ActionResult<PagedResulFeed<ArticleMatrix>>> GetCategoryAndOrTitle(
                                        [FromQuery] int pi = 1, int ps = 10, string? q=null, string? t=null) 
         {
@@ -60,10 +55,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 
         [HttpGet]
         [Route("GetFilterByYear")]
-        [ProducesResponseType(typeof(PagedResulFeed<ArticleMatrix>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Produces("application/json")]
+        [ProducesResponseType(typeof(PagedResulFeed<ArticleMatrix>), 200)]
         public async Task<ActionResult<PagedResulFeed<ArticleMatrix>>> GetFilterByYear(
                     [FromQuery] int pi = 1, int ps = 10, int? q = null)
         {

@@ -31,9 +31,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 
         [HttpGet]
         [Route("GetCategory/{authorId}")]
-        [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<CategoryDto>), 200)]
         public async Task<ActionResult<List<CategoryDto>>> GetCategory(string authorId)
         {
             if(string.IsNullOrWhiteSpace(authorId)) return BadRequest(string.Empty);

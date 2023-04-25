@@ -37,10 +37,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetCategory/{authorId}")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<CategoryDto>), 200)]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategory(string authorId)
         {
             if(string.IsNullOrWhiteSpace(authorId)) return BadRequest(string.Empty);
@@ -70,9 +67,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetAuthors")]
-        [ProducesResponseType(typeof(IEnumerable<AuthorsDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<AuthorsDto>), 200)]
         public async Task<ActionResult<IEnumerable<AuthorsDto>>> GetAuthors()
         {
             var iEnumAuthor = await _queryADORepository.GetAuthors();
@@ -106,9 +101,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("GetAll/{authorId}")]
-        [ProducesResponseType(typeof(IEnumerable<ArticleMatrixDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<ArticleMatrixDto>), 200)]
         public async Task<ActionResult<IEnumerable<ArticleMatrixDto>>> GetAll(string authorId)
         {
             var model = await _queryADORepository.GetAllArticlesByAuthorId(authorId);

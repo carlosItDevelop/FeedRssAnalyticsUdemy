@@ -4,7 +4,9 @@ using Cooperchip.FeedRSSAnalytics.Infra.Data.Orm;
 using Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Automappers;
 using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.Extensios;
+using Cooperchip.FeedRssBlogsAnalyticsApi.Configurations.FiltersAndAttibutes;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi
 {
@@ -22,7 +24,15 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             // AutoMapper
             builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(opt =>
+            {
+                opt.Filters.Add<GlobalProducesResponseTypeFilter>();
+                opt.Filters.Add(new GlobalProducesResponseTypeAttibutes(typeof(ErrorResponse), 400));
+                opt.Filters.Add(new GlobalProducesResponseTypeAttibutes(typeof(ErrorResponse), 404));
+                opt.Filters.Add(new GlobalProducesResponseTypeAttibutes(typeof(ErrorResponse), (int)HttpStatusCode.Unauthorized));
+                opt.Filters.Add(new GlobalProducesResponseTypeAttibutes(typeof(ErrorResponse), (int)HttpStatusCode.MethodNotAllowed));
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             //builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerConfiguration();
