@@ -41,6 +41,32 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
             return await Task.FromResult(queryExecute);
         }
 
+
+        public async Task<IEnumerable<ArticleMatrix>> GetAllArticlesByAuthorId(string authorId)
+        {
+            var queryExecute = ExecuteQuery(
+                "SELECT * FROM ArticleMatrices WHERE AuthorId = @AuthorId ORDER BY PubDate DESC",
+                new SqlParameter("@AuthorId", authorId),
+                reader => new ArticleMatrix
+                {
+                    Id = (int)reader["Id"],
+                    AuthorId = reader["AuthorId"].ToString(),
+                    Author = reader["Author"].ToString(),
+                    Link = reader["Link"].ToString(),
+                    Title = reader["Title"].ToString(),
+                    Type = reader["Type"].ToString(),
+                    Category = reader["Category"].ToString(),
+                    Views = reader["Views"].ToString(),
+                    ViewsCount = (decimal)reader["ViewsCount"],
+                    Likes = (int)reader["Likes"],
+                    PubDate = (DateTime)reader["PubDate"]
+                });
+
+                return await Task.FromResult(queryExecute);
+        }
+
+        #region: Consulta em ADO.Net Puro, Parametrizada e Genérica
+
         private IEnumerable<T> ExecuteQuery<T>(string query, SqlParameter? sqlParameter, Func<SqlDataReader, T> map)
         {
             var result = new List<T>();
@@ -74,5 +100,7 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
                 }
             }
         }
+
+        #endregion
     }
 }

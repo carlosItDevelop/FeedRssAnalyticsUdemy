@@ -6,5 +6,8 @@ namespace Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository
     {
         Task<IEnumerable<Category>> GetCategoriesByAuthorId(string authorId);
         Task<IEnumerable<Authors>> GetAuthors();
+
+        Task<IEnumerable<ArticleMatrix>> GetAllArticlesByAuthorId(string authorId);
+
     }
 }

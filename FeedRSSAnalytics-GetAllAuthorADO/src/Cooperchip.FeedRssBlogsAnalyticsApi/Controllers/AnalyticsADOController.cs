@@ -80,5 +80,41 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
             return Ok(_mapper.Map<IEnumerable<AuthorsDto>>(iEnumAuthor));
         }
 
+
+        /// <summary>
+        /// Retorna uma lista de Feeds (Artigo, Blog, video, etc.) do Author.
+        /// </summary>
+        /// <returns>Retorna uma lista de Feeds (Artigo, Blog, video, etc.) do Author.</returns>
+        /// <remarks>
+        /// Retorna uma lista de Feeds (Artigo, Blog, video, etc.) do Author.
+        /// Exemplo de Request:
+        /// 
+        ///      GET /Todo
+        ///      {
+        ///         "id": "Id do Author",
+        ///         "authorId": "Apelido do Author",
+        ///         "author": "Nome do Author",
+        ///         "link": "Link do Artigo",
+        ///         "title": "Título do Artigo",
+        ///         "type": "Tipo do Artigo",
+        ///         "category": "Categoria do Artigo",
+        ///         "views": "1.5k",
+        ///         "viewsCount": 15000, [exemplo...]
+        ///         "likes": 2, [exemplo...]
+        ///         "pubDate": "2023-02-18T00:00:00" [exemplo...]
+        ///      }
+        /// </remarks>
+        [HttpGet]
+        [Route("GetAll/{authorId}")]
+        [ProducesResponseType(typeof(IEnumerable<ArticleMatrixDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ArticleMatrixDto>>> GetAll(string authorId)
+        {
+            var model = await _queryADORepository.GetAllArticlesByAuthorId(authorId);
+            var aMapper = _mapper.Map<IEnumerable<ArticleMatrixDto>>(model);
+            return Ok(aMapper);
+        }
+
     }
 }
