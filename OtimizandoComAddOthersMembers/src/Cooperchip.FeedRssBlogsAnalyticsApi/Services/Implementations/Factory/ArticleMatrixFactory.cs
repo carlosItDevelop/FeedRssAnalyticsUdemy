@@ -19,8 +19,13 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Services.Implementations.Factory
                 PubDate = feed.PubDate
             };
 
-            articleMatrix.AddCategories(htmlDocument).AddViews(htmlDocument);
-            articleMatrix.AddLikes(htmlDocument);
+            //articleMatrix
+            //    .AddCategories(htmlDocument)
+            //    .AddLikes(htmlDocument)
+            //    .AddViews(htmlDocument);
+
+            articleMatrix.AddOthersMembers(htmlDocument);
+
 
             return await Task.FromResult(articleMatrix);
         }
