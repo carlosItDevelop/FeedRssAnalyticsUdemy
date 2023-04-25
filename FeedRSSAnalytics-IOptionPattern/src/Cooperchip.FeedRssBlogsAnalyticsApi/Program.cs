@@ -1,4 +1,5 @@
 
+using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
 using Cooperchip.FeedRSSAnalytics.Domain.Reposiory.AbtractRepository;
 using Cooperchip.FeedRSSAnalytics.Infra.Data.Orm;
 using Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository;
@@ -20,6 +21,8 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             builder.Services
                 .AddDbContext<ApplicationDbContext>(opt =>
                         opt.UseSqlServer(configuration.GetConnectionString("ConnStr")));
+
+            builder.Services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
 
             // AutoMapper
             builder.Services.AddAutoMapper(typeof(AutoMapperConfig));

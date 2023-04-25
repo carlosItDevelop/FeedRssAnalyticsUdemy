@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Cooperchip.FeedRSSAnalytics.CoreShare\Cooperchip.FeedRSSAnalytics.CoreShare.csproj" />
     <ProjectReference Include="..\Cooperchip.FeedRSSAnalytics.Domain\Cooperchip.FeedRSSAnalytics.Domain.csproj" />
     <ProjectReference Include="..\Cooperchip.FeedRSSAnalytics.Infra\Cooperchip.FeedRSSAnalytics.Infra.csproj" />
   </ItemGroup>

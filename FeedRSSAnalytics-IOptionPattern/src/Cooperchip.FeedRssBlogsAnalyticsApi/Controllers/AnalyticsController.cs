@@ -9,6 +9,8 @@ using HtmlAgilityPack;
 using System.Xml.Linq;
 using System.Net;
 using System.Diagnostics;
+using Cooperchip.FeedRSSAnalytics.CoreShare.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
 {
@@ -25,12 +27,19 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         private readonly IQueryRepository _queryRepository;
         private readonly IMapper _mapper;
 
-        public AnalyticsController(ApplicationDbContext dbContext, IConfiguration configuration, IQueryRepository queryRepository, IMapper mapper)
+        private readonly AppSettings _appSettings;
+
+        public AnalyticsController(ApplicationDbContext dbContext, 
+                                   IConfiguration configuration, 
+                                   IQueryRepository queryRepository, 
+                                   IMapper mapper, 
+                                   IOptions<AppSettings> appSettings)
         {
             _dbContext = dbContext;
             _configuration = configuration;
             _queryRepository = queryRepository;
             _mapper = mapper;
+            _appSettings = appSettings.Value;
         }
 
 
@@ -40,7 +49,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
         {
             try
             {
-                XDocument doc = XDocument.Load("https://www.c-sharpcorner.com/members/" + authorId + "/rss");
+                XDocument doc = XDocument.Load($"{_appSettings.BaseUrl}/members/{authorId}/rss");
                 if (doc == null)
                 {
                     return false;
@@ -53,7 +62,7 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi.Controllers
                         Content = item.Elements().First(i => i.Name.LocalName == "description").Value,
 
                         Link = (item.Elements().First(i => i.Name.LocalName == "link").Value).StartsWith("/")
-                            ? "https://www.c-sharpcorner.com" + item.Elements().First(i => i.Name.LocalName == "link").Value
+                            ? $"{_appSettings.BaseUrl}" + item.Elements().First(i => i.Name.LocalName == "link").Value
                             : item.Elements().First(i => i.Name.LocalName == "link").Value,
 
                         PubDate = Convert.ToDateTime(item.Elements().First(i => i.Name.LocalName == "pubDate").Value, culture),
