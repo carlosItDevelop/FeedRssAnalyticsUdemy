@@ -31,6 +31,17 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             builder.Services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
             builder.Services.AddSingleton(x => x.GetRequiredService<IOptions<AppSettings>>().Value);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("Total",
+                    builder =>
+                    {
+                        builder.WithOrigins()
+                                .AllowAnyOrigin()
+                                .AllowAnyMethod();
+                    });
+            });
+
             // AutoMapper
             builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
@@ -56,6 +67,8 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             builder.Services.AddScoped<ITransactionHandler, TransactionHandler>();
 
             var app = builder.Build();
+
+            app.UseCors("Total");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
