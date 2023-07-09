@@ -35,11 +35,11 @@ namespace Cooperchip.FeedRssBlogsAnalyticsApi
             {
                 options.AddPolicy("Total",
                     builder =>
-                    {
-                        builder.WithOrigins()
-                                .AllowAnyOrigin()
-                                .AllowAnyMethod();
-                    });
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
+                            //.WithExposedHeaders("X-Pagination", "X-Pagination-Result"));
             });
 
             // AutoMapper
