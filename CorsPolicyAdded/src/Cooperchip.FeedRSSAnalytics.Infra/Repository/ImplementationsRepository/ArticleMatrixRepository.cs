@@ -117,6 +117,7 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
         {
             int count = data.Count();
             data = data.Skip(pageSize * (pageIndex -1)).Take(pageSize);
+            int totalPages = (int)Math.Ceiling(count / (double)pageSize);
 
             return new PagedResulFeed<ArticleMatrix>
             {
@@ -125,16 +126,16 @@ namespace Cooperchip.FeedRSSAnalytics.Infra.Repository.ImplementationsRepository
                 PageIndex = pageIndex,
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling(count / (double)pageSize),
-                HasPrevious = pageIndex > 1,
-                HasNext = pageIndex < count - 1
+                HasNext = pageIndex < totalPages, // Verdadeiro se não estiver na última página
+                HasPrevious = pageIndex > 1       // Verdadeiro se não estiver na primeira página
             };
         }
+        #endregion
 
         public void Dispose()
         {
             _context?.Dispose();
         }
-        #endregion
 
     }
 }
